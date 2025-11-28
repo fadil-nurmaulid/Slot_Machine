@@ -1,0 +1,42 @@
+slot_machine_gui/
+│
+├── main.py
+│
+├── gui/
+│   ├── main_window.py
+│   ├── redeem_dialog.py
+│   ├── assets/
+│   │   ├── icons/
+│   │   │   ├── cherry.png
+│   │   │   ├── lemon.png
+│   │   │   ├── bar.png
+│   │   │   ├── seven.png
+│   │   │   ├── spin_button.png
+│   │   │   └── app_icon.ico         ← window/application icon
+│   │   ├── sounds/
+│   │   │   ├── spin.wav
+│   │   │   ├── win.wav
+│   │   │   └── click.wav
+│   │   └── bgm/
+│   │       └── bg_music.mp3
+│   └── styles/style.qss
+│
+├── core/
+│   ├── slot_logic.py
+│   ├── redeem_logic.py
+│   └── sound_manager.py
+│
+├── data/
+│   ├── user_data.json
+│   ├── redeem_codes.json
+│   └── settings.json
+│
+├── utils/
+│   ├── file_manager.py
+│   └── helpers.py
+│
+├── screenshots/                ← place your screenshots here
+│   ├── ui_preview.png
+│   └── redeem_dialog_preview.png
+│
+└── README.md
