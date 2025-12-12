@@ -1,32 +1,46 @@
-import json
-import os
+# core/redeem_logic.py
 
-REDEEM_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "redeem_codes.json")
+from utils.file_manager import get_path, load_json, save_json
 
-# Keep track of used codes in memory (reset on app restart)
-used_codes = set()
+REDEEM_FILE = get_path("data", "redeem_codes.json")
+USER_DATA_FILE = get_path("data", "user_data.json")
+
 
 def validate_redeem_code(code: str) -> int:
-    """Return coins if valid, 0 if invalid or already used."""
+    """
+    Validate redeem code permanently.
+    Returns:
+        coins awarded (0 = invalid or already used)
+    """
+    if not code:
+        return 0
+
     code = code.upper().strip()
 
-    if code in used_codes:
+    # Load redeem codes (constant)
+    redeem_codes = load_json(REDEEM_FILE, default={})
+
+    # If code does not exist
+    if code not in redeem_codes:
         return 0
 
-    if not os.path.exists(REDEEM_FILE):
-        print(f"[Warning] Redeem file not found: {REDEEM_FILE}")
+    # Load user data (dynamic)
+    user_data = load_json(USER_DATA_FILE, default={
+        "coins": 0,
+        "used_redeem_codes": []
+    })
+
+    # Already used?
+    if code in user_data.get("used_redeem_codes", []):
         return 0
 
-    with open(REDEEM_FILE, "r") as f:
-        try:
-            redeem_dict = json.load(f)
-        except json.JSONDecodeError:
-            print("[Error] Invalid JSON in redeem_codes.json")
-            return 0
+    # Redeem successful
+    coins = redeem_codes[code]
 
-    if code in redeem_dict:
-        coins = redeem_dict[code]
-        used_codes.add(code)  # mark as used
-        return coins
+    # Mark as used
+    user_data["used_redeem_codes"].append(code)
 
-    return 0
+    # Save back to disk
+    save_json(USER_DATA_FILE, user_data)
+
+    return coins
